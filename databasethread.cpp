@@ -14,3 +14,11 @@ void DataBaseThread::run()
 {
     exec();
 }
+
+DataBaseThread::~DataBaseThread()
+{
+    if (isRunning()){
+                quit();
+                wait();
+    }
+}

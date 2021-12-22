@@ -19,6 +19,7 @@
 #include "tablemodel.h"
 #include "databasethread.h"
 #include "dirwrapper.h"
+#include "fileprocessthread.h"
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
@@ -36,13 +37,15 @@ public:
     ~MainWindow();
 public slots:
     void setFolder();
-    void placeData(XMLDataStruct data){
-        qDebug() << "place data";
-    }
+    void fileData(const QStringList& data);
+    void placeData(const QList<std::shared_ptr<XMLDataStruct>>& data);
+    void setPrBarVal(int val);
 signals:
-    void postData(XMLDataStruct data);
-    void setFilesList(QStringList strList);
-
+    void postData(const XMLDataStruct& data);
+    void deleteData(const QString key);
+    void getData();
+    void setFilesList(const QStringList& strList);
+    void stopFPThread();
 private:
     Ui::MainWindow *ui;
     QFileSystemModel *_qfsm;
@@ -50,5 +53,7 @@ private:
     TableModel *_tm;
     QProgressBar *_pb;
     QLabel *_lbDir;
+    FileProcessThread _FPThread;
+    DataBaseThread _DBThread;
 };
 #endif // MAINWINDOW_H

@@ -10,6 +10,7 @@
 #include <QtSql/QSqlRecord>
 #include <QMutex>
 #include <QMutexLocker>
+#include <memory>
 
 struct XMLDataStruct{
     QString texteditor,
@@ -23,10 +24,11 @@ class DataBase : public QObject
 public:
     static DataBase& getInstance();
 signals:
-    void gotData(XMLDataStruct data);
+    void gotData(const QList<std::shared_ptr<XMLDataStruct>>& data);
 public slots:
-    void post(XMLDataStruct data);
-    void deleteFrom(XMLDataStruct data);
+    void post(const XMLDataStruct& data);
+    void deleteFrom(const QString key);
+    void read();
 private:
     static DataBase instance;
     static QMutex _dbMtx;

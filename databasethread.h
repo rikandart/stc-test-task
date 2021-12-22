@@ -15,6 +15,7 @@ public:
     DataBaseThread();
     void connectToDB(QObject* sender);
     void run();
+    ~DataBaseThread();
 private:
     DataBase& db = DataBase::getInstance();
 };

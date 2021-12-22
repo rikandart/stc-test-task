@@ -3,12 +3,13 @@
 
 #include <QTableView>
 #include <QObject>
+#include "tablemodel.h"
 
 class TableView : public QTableView
 {
     Q_OBJECT
 public:
-    TableView(QWidget *parent = nullptr);
+    TableView(TableModel* model, QWidget *parent = nullptr);
     ~TableView(){};
 };
 
