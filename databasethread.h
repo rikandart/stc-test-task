@@ -2,15 +2,21 @@
 #define DATABASETHREAD_H
 
 #include <QThread>
-//#include
+#include <QMutex>
+#include <QMutexLocker>
 #include <QObject>
+#include <QQueue>
+#include "database.h"
 
 class DataBaseThread : public QThread
 {
     Q_OBJECT
 public:
     DataBaseThread();
-    void run(){};
+    void connectToDB(QObject* sender);
+    void run();
+private:
+    DataBase& db = DataBase::getInstance();
 };
 
 #endif // DATABASETHREAD_H

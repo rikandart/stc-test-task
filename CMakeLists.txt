@@ -28,6 +28,10 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Xml REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Xml REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Sql REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Sql REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Test REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR}Test REQUIRED)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -40,6 +44,10 @@ set(PROJECT_SOURCES
         databasethread.h
         tablemodel.cpp
         tablemodel.h
+        dirwrapper.h dirwrapper.cpp
+        database.h database.cpp
+        test.h test.cpp
+        fileprocessthread.h fileprocessthread.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -59,3 +67,5 @@ else()
 endif()
 
 target_link_libraries(stc-test-task PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(stc-test-task PRIVATE Qt${QT_VERSION_MAJOR}::Sql)
+target_link_libraries(stc-test-task PRIVATE Qt${QT_VERSION_MAJOR}::Test)
