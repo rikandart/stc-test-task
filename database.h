@@ -25,8 +25,9 @@ public:
     static DataBase& getInstance();
 signals:
     void gotData(const QList<std::shared_ptr<XMLDataStruct>>& data);
+    void progress(int value);
 public slots:
-    void post(const XMLDataStruct& data);
+    void post(std::shared_ptr<XMLDataStruct> ds);
     void deleteFrom(const QString key);
     void read();
 private:

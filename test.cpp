@@ -11,17 +11,16 @@ void Test::dbTest()
     XMLDataStruct ds = {"Atom", "everything", "ANSI; UTF;", "true",
                  "true", "false"};
     DataBase &db = DataBase::getInstance();
-    db.post(ds);
+    db.post(std::shared_ptr<XMLDataStruct>(&ds));
 }
 
 void Test::xmlTest()
 {
     QSKIP("skipping xmlTest");
-    QFile file ("E:/TestFolder/atom.xml");
+    QFile file ("C:/Users/pizhu/Documents/TestFolder/atom.xml");
     QVERIFY(file.open(QFile::ReadOnly | QFile::Text) == true);
     QString xmlStr(file.readAll().toStdString().c_str());
     QXmlStreamReader xmlReader(xmlStr);
-//    xmlReader.setDevice(&file);
     xmlReader.readNext();
     while(!xmlReader.atEnd())
     {
@@ -29,14 +28,16 @@ void Test::xmlTest()
             {
                 qDebug() << "element name: '" << xmlReader.name().toString() << "'" << xmlReader.lineNumber();
             }
-            //here we are inside the element, so if it is not empty, we can read the element's value
             else if(xmlReader.isCharacters() && !xmlReader.isWhitespace())
             {
                 qDebug() << "element value: '" <<xmlReader.text().toString() << "'" << xmlReader.lineNumber();
             }
-        xmlReader.readNext(); // Переходим к следующему элементу файла
+        if(xmlReader.isEndElement()){
+            qDebug() << "end el" << xmlReader.name().toString();
+        }
+        xmlReader.readNext();
     }
-    file.close(); // Закрываем файл
+    file.close();
 }
 
 void Test::qlistTest()

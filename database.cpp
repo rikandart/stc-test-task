@@ -28,17 +28,17 @@ void DataBase::_createTable()
         qDebug() << "create table error" << query.lastError().text();
 }
 
-void DataBase::post(const XMLDataStruct& data)
+void DataBase::post(std::shared_ptr<XMLDataStruct> ds)
 {
     QSqlQuery query;
     query.prepare(QString(
                     "insert or replace into %1 "
                     "(texteditor, fileformats, encoding, "
-                    "hasintellisense, hasplugins, cancompile)"
+                    "hasintellisense, hasplugins, cancompile) "
                     "values "
-                    "(%2, %3, %4, %5, %6, %7);"
-                   ).arg(xmlTable).arg(data.texteditor).arg(data.fileformats)
-                    .arg(data.encoding).arg(data.hasintellisense).arg(data.cancompile));
+                    "('%2', '%3', '%4', '%5', '%6', '%7');"
+                   ).arg(xmlTable).arg(ds->texteditor).arg(ds->fileformats)
+                    .arg(ds->encoding).arg(ds->hasintellisense).arg(ds->hasplugins).arg(ds->cancompile));
     if(!query.exec()) qDebug() << "insert query error" << query.lastError().text() << query.lastQuery();
 }
 
@@ -54,12 +54,20 @@ void DataBase::deleteFrom(const QString key)
 void DataBase::read()
 {
     QSqlQuery query;
+    query.prepare(QString("select count(*) from %1;").arg(xmlTable));
+    if(!query.exec()){
+        qDebug() << "select count query error" << query.lastError().text()
+                 << query.lastQuery();
+        return;
+    }
+    query.next();
+    int rowsCount = query.value(0).toInt();
+    if(rowsCount < 1) return;
     query.prepare(QString("select * from %1;").arg(xmlTable));
     if(!query.exec()){
         qDebug() << "select query error" << query.lastError().text() << query.lastQuery();
         return;
     }
-
     int teId = query.record().indexOf("texteditor");
     int ffId = query.record().indexOf("fileformats");
     int eId = query.record().indexOf("encoding");
@@ -67,6 +75,7 @@ void DataBase::read()
     int hpId = query.record().indexOf("hasplugins");
     int ccId = query.record().indexOf("cancompile");
     QList<std::shared_ptr<XMLDataStruct>> dataList;
+    float progressNum = 0.0;
     while(query.next()){
         std::shared_ptr<XMLDataStruct> sp(new XMLDataStruct);
         sp->texteditor = query.value(teId).toString();
@@ -76,6 +85,8 @@ void DataBase::read()
         sp->hasplugins = query.value(hpId).toString();
         sp->cancompile = query.value(ccId).toString();
         dataList << sp;
-    }
+        progressNum += 100/query.size();
+        emit progress((int)progressNum);
+    }    
     emit gotData(dataList);
 }
