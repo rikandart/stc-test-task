@@ -3,12 +3,14 @@
 DataBase DataBase::instance;
 QMutex DataBase::_dbMtx;
 
+// класс DataBase - синглтон
 DataBase &DataBase::getInstance()
 {
     QMutexLocker locker(&_dbMtx);
     return instance;
 }
 
+// открытие или создание базы
 DataBase::DataBase(QObject *parent) : QObject(parent)
 {
     _db = QSqlDatabase::addDatabase("QSQLITE");
@@ -19,6 +21,7 @@ DataBase::DataBase(QObject *parent) : QObject(parent)
 
 DataBase::~DataBase(){}
 
+// создание таблицы
 void DataBase::_createTable()
 {
     QSqlQuery query;
@@ -28,6 +31,7 @@ void DataBase::_createTable()
         qDebug() << "create table error" << query.lastError().text();
 }
 
+// пост в бд
 void DataBase::post(std::shared_ptr<XMLDataStruct> ds)
 {
     QSqlQuery query;
@@ -42,6 +46,7 @@ void DataBase::post(std::shared_ptr<XMLDataStruct> ds)
     if(!query.exec()) qDebug() << "insert query error" << query.lastError().text() << query.lastQuery();
 }
 
+// удаление из бд
 void DataBase::deleteFrom(const QString key)
 {
     QSqlQuery query;
@@ -51,6 +56,7 @@ void DataBase::deleteFrom(const QString key)
     if(!query.exec()) qDebug() << "insert query error" << query.lastError().text() << query.lastQuery();
 }
 
+// считать всю таблицу
 void DataBase::read()
 {
     QSqlQuery query;

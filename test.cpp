@@ -1,5 +1,5 @@
 #include "test.h"
-
+// некоторые вспомогательные тесты
 Test::Test(QObject *parent) : QObject(parent)
 {
 

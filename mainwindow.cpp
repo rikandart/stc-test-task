@@ -55,6 +55,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+// установка директории для чтения
 void MainWindow::setFolder()
 {
     QString dir = QFileDialog::getExistingDirectory(this, "Выберите директорию",
@@ -84,6 +85,7 @@ void MainWindow::errFiles(const QStringList &files)
     QMessageBox::warning(nullptr, "Внимание", errStr);
 }
 
+// получение данных xml из потока обработки файлов и направление их в бд
 void MainWindow::fileData(const QStringList &data)
 {
     std::shared_ptr<XMLDataStruct> ds(new XMLDataStruct);
@@ -98,6 +100,7 @@ void MainWindow::fileData(const QStringList &data)
     emit postData(ds);
 }
 
+// размещение данных в TableModel
 void MainWindow::placeData(const QList<std::shared_ptr<XMLDataStruct>> &data)
 {
 //    qDebug() << "placeData";
@@ -113,6 +116,7 @@ void MainWindow::placeData(const QList<std::shared_ptr<XMLDataStruct>> &data)
     _tm->updateView();
 }
 
+// установка значения прогресс бара
 void MainWindow::setPrBarVal(int val)
 {
     _pb->setValue(val);
@@ -120,6 +124,7 @@ void MainWindow::setPrBarVal(int val)
     else if(val > 0) _pb->setVisible(true);
 }
 
+// изменение записи
 void MainWindow::editRec(int index)
 {
     _indToUpd = index;
@@ -134,7 +139,7 @@ void MainWindow::editRec(int index)
     _le->setFocus();
     _le->selectAll();
 }
-
+// завершение изменения записи
 void MainWindow::commitEdited()
 {
     _tm->updateAt(_indToUpd, _le->text());
@@ -155,7 +160,7 @@ void MainWindow::hideEditLine()
 {
     _le->setVisible(false);
 }
-
+// экспортирование xml
 void MainWindow::dataToExport(int index)
 {
     QString filename = QFileDialog::getSaveFileName(this, "Сохранить как",
@@ -178,6 +183,7 @@ void MainWindow::dataToExport(int index)
 
 MainWindow::LineEdit::LineEdit(QWidget *parent) : QLineEdit(parent){}
 
+// обработка события завершения редактирования
 void MainWindow::LineEdit::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Return){
